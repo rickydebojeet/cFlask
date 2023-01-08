@@ -1,5 +1,7 @@
 PROG = cflask
 SRC = cflask.c
+HELPER = helper.c
+FUNC = functions.c
 
 TOP = libhttp-1.8
 CIVETWEB_LIB = libcivetweb.a
@@ -15,8 +17,8 @@ endif
 
 all: $(PROG)
 
-$(PROG): $(CIVETWEB_LIB) $(SRC)
-	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(SRC) $(CIVETWEB_LIB) $(LIBS)
+$(PROG): $(CIVETWEB_LIB) $(SRC) $(HELPER) $(FUNC)
+	$(CC) -o $@ $(CFLAGS) $(LDFLAGS) $(SRC) $(CIVETWEB_LIB) $(LIBS) $(HELPER) $(FUNC)
 
 $(CIVETWEB_LIB):
 	$(MAKE) -C $(TOP) clean lib
