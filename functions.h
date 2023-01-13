@@ -1,15 +1,17 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#define FUNCTION_COUNT 7
+
 #include "helper.h"
 
-char *basic(char *);
-char *square(char *);
-char *cube(char *);
-char *helloworld(char *);
-char *pingpong(char *);
-char *prime(char *);
-char *fibonacci(char *);
+void basic(void *, char *);
+void square(void *, char *);
+void cube(void *, char *);
+void helloworld(void *, char *);
+void pingpong(void *, char *);
+void prime(void *, char *);
+void fibonacci(void *, char *);
 
 static url url_list[7] = {
     {"/square", "square", 0},

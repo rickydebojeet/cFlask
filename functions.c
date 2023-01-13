@@ -1,98 +1,104 @@
 #include "functions.h"
 
-char *basic(char *arg)
+void basic(void *arg, char *result)
 {
-    return "Hello World!!";
+    sprintf(result, "Hello World from cflask!");
+    return;
 }
 
-char *square(char *arg)
+void square(void *arg, char *result)
 {
     if (!arg)
     {
-        return "1";
+        sprintf(result, "1");
+        return;
     }
     else
     {
-        int x = atoi(arg);
+        int x = *((int *)arg);
         x = x * x;
-        char *result = malloc(10);
-        itoa(x, result);
-        return result;
+        sprintf(result, "%d", x);
+        return;
     }
 }
 
-char *cube(char *arg)
+void cube(void *arg, char *result)
 {
     if (!arg)
     {
-        return "1";
+        sprintf(result, "1");
+        return;
     }
     else
     {
-        int x = atoi(arg);
+        int x = *((int *)arg);
         x = x * x * x;
-        char *result = malloc(10);
-        itoa(x, result);
-        return result;
+        sprintf(result, "%d", x);
+        return;
     }
 }
-
-char *helloworld(char *arg)
+void helloworld(void *arg, char *result)
 {
     if (!arg)
     {
-        return "Hello";
+        sprintf(result, "%s", "Hello");
+        return;
     }
     else
     {
-        char *result = malloc(strlen(arg) + 7);
-        sprintf(result, "Hello, %s", arg);
-        return result;
+        sprintf(result, "Hello, %s", (char *)arg);
+        return;
     }
 }
 
-char *pingpong(char *arg)
+void pingpong(void *arg, char *result)
 {
     if (!arg)
     {
-        return "PingPong";
+        sprintf(result, "%s", "PingPong");
+        return;
     }
     else
     {
-        return arg;
+        sprintf(result, "%s", (char *)arg);
+        return;
     }
 }
 
-char *prime(char *arg)
+void prime(void *arg, char *result)
 {
     if (!arg)
     {
-        return "False";
+        sprintf(result, "False");
+        return;
     }
     else
     {
-        int x = atoi(arg);
+        int x = *((int *)arg);
         int i;
         for (i = 2; i < x; i++)
         {
             if (x % i == 0)
             {
-                return "False";
+                sprintf(result, "False");
+                return;
             }
         }
-        return "True";
+        sprintf(result, "True");
+        return;
     }
 }
 
-char *fibonacci(char *arg)
+void fibonacci(void *arg, char *result)
 {
     if (!arg)
     {
-        return "1";
+        sprintf(result, "1");
+        return;
     }
     else
     {
-        int x = atoi(arg);
+        int x = *((int *)arg);
         int i;
         int a = 0;
         int b = 1;
@@ -103,8 +109,7 @@ char *fibonacci(char *arg)
             a = b;
             b = c;
         }
-        char *result = malloc(10);
-        itoa(c, result);
-        return result;
+        sprintf(result, "%d", c);
+        return;
     }
 }
