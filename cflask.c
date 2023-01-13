@@ -1,5 +1,4 @@
 #include "civetweb.h"
-#include "helper.h"
 #include "functionslist.h"
 
 // This function will be called by civetweb on every new request.
@@ -7,37 +6,34 @@ static int begin_request_handler(struct mg_connection *conn)
 {
     const struct mg_request_info *request_info = mg_get_request_info(conn);
     char content[200];
-    char *arg = malloc(100);
+    char arg[100] = {'\0'};
     char *result = malloc(100);
     int arg_length, content_length, error = 1;
-    enum arg_type type;
+    int num;
 
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < FUNCTION_COUNT; i++)
     {
         if (!strcmp(request_info->uri, url_list[i].url))
         {
             error = 0;
             if (!request_info->query_string)
             {
-                type = NONE;
-                arg = (char *)request_info->query_string;
+                (*function[url_list[i].index])((void *)0, result);
             }
             else if (mg_get_var(request_info->query_string, strlen(request_info->query_string), "num", arg, sizeof(arg)) >= 1)
             {
-                type = NUMBER;
+                num = atoi(arg);
+                (*function[url_list[i].index])((void *)&num, result);
             }
             else if (mg_get_var(request_info->query_string, strlen(request_info->query_string), "str", arg, sizeof(arg)) >= 1)
             {
-                type = STRING;
+                (*function[url_list[i].index])((void *)&arg, result);
             }
             else
             {
-                type = ERROR;
-                error = 1;
-                break;
+                sprintf(result, "Wrong Query String\nPlease use ?num= for number or ?str= for string");
             }
 
-            result = (*function[url_list[i].index])(arg);
             content_length = snprintf(content, sizeof(content), "%s", result);
             mg_printf(conn,
                       "HTTP/1.1 200 OK\r\n"
@@ -60,10 +56,19 @@ static int begin_request_handler(struct mg_connection *conn)
                   "%s",
                   content_length, content);
     }
+    free(result);
     // Returning non-zero tells civetweb that our function has replied to
     // the client, and civetweb should not send client any more data.
     return 1;
 }
+
+// void constructFunctionsList()
+// {
+//     for (int i = 0; i < FUNCTION_COUNT; i++)
+//     {
+//         function[url_list[i].index] = url_list[i].function;
+//     }
+// }
 
 int main(int argc, char *argv[])
 {
