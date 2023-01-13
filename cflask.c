@@ -21,9 +21,14 @@ static int begin_request_handler(struct mg_connection *conn)
             {
                 arg = (char *)request_info->query_string;
             }
-            else
+            else if (strchr((char *)request_info->query_string, '=') != NULL)
             {
                 arg = strchr((char *)request_info->query_string, '=') + 1;
+            }
+            else
+            {
+                error = 1;
+                break;
             }
             result = (*function[url_list[i].index])(arg);
             content_length = snprintf(content, sizeof(content), "%s", result);
@@ -34,6 +39,9 @@ static int begin_request_handler(struct mg_connection *conn)
                       "\r\n"
                       "%s",
                       content_length, content);
+
+            // free(result);
+            // free(arg);
         }
     }
 
@@ -51,32 +59,40 @@ static int begin_request_handler(struct mg_connection *conn)
     return 1;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    if (argc != 3)
+    {
+        printf("Usage: ./cflask <port> <num_threads>\n");
+        exit(1);
+    }
+    else if (atoi(argv[1]) < 1024 || atoi(argv[1]) > 65535)
+    {
+        printf("Port number must be between 1024 and 65535\n");
+        exit(1);
+    }
+    else if (atoi(argv[2]) < 1 || atoi(argv[2]) > 10000)
+    {
+        printf("Number of threads must be between 1 and 10000\n");
+        exit(1);
+    }
+
     struct mg_context *ctx;
     struct mg_callbacks callbacks;
-    char port[6];
-    char num_threads[6];
 
-    printf("Enter port number: ");
-    scanf("%s", port);
-    printf("Enter number of threads: ");
-    scanf("%s", num_threads);
-
-    // List of options. Last element must be NULL.
-    const char *options[] = {"listening_ports", port, "num_threads", num_threads, NULL};
-    // const char *options[] = {"listening_ports", "8080", "num_threads", "50", NULL};
+    // List of options for the server. Last element must be NULL.
+    const char *options[] = {"listening_ports", argv[1], "num_threads", argv[2], NULL};
 
     // Prepare callbacks structure. We have only one callback, the rest are NULL.
     memset(&callbacks, 0, sizeof(callbacks));
     callbacks.begin_request = begin_request_handler;
 
-    // Start the web server.
+    // Start the web server with the given options and callbacks structure.
     ctx = mg_start(&callbacks, NULL, options);
-    printf("Server started on port %s with %s threads!\n", port, num_threads);
-    printf("Go to http://localhost:%s/ to see it in action.\n", port);
-    printf("Enter quit followed by enter stop the server...\n");
-    scanf("%*s");
+    printf("Server started on port %s with %s threads!\n", argv[1], argv[2]);
+    printf("Go to http://localhost:%s/ to see it in action.\n", argv[1]);
+    printf("Press enter to stop the server...\n");
+    getchar();
 
     // Stop the server.
     mg_stop(ctx);
