@@ -2,8 +2,7 @@
 #define FUNCTIONS_H
 
 #define FUNCTION_COUNT 7
-
-#include "helper.h"
+#include "functionslist.h"
 
 void basic(void *, char *);
 void square(void *, char *);
@@ -14,12 +13,12 @@ void prime(void *, char *);
 void fibonacci(void *, char *);
 
 static url url_list[7] = {
-    {"/square", "square", 0},
-    {"/cube", "cube", 1},
-    {"/helloworld", "helloworld", 2},
-    {"/pingpong", "pingpong", 3},
-    {"/arithmetic/prime", "prime", 4},
-    {"/arithmetic/fibonacci", "fibonacci", 5},
-    {"/", "basic", 6}};
+    {"/square", &square, 0},
+    {"/cube", &cube, 1},
+    {"/helloworld", &helloworld, 2},
+    {"/pingpong", &pingpong, 3},
+    {"/arithmetic/prime", &prime, 4},
+    {"/arithmetic/fibonacci", &fibonacci, 5},
+    {"/", &basic, 6}};
 
 #endif

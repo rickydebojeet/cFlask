@@ -1,7 +1,17 @@
 #ifndef FUNCTIONS_LIST_H
 #define FUNCTIONS_LIST_H
-#include "functions.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-char *(*function[7])(char *) = {square, cube, helloworld, pingpong, prime, fibonacci, basic};
+typedef struct list
+{
+    char *url;
+    void (*function_ptr)(void *, char *);
+    int index;
+
+} url;
+
+static void (*function[7])(void *, char *);
 
 #endif
