@@ -7,29 +7,36 @@ static int begin_request_handler(struct mg_connection *conn)
 {
     const struct mg_request_info *request_info = mg_get_request_info(conn);
     char content[200];
-    int content_length;
-    int error = 1;
+    char *arg = malloc(100);
+    char *result = malloc(100);
+    int arg_length, content_length, error = 1;
+    enum arg_type type;
 
     for (int i = 0; i < 7; i++)
     {
-        if (strcmp(request_info->uri, url_list[i].url) == 0)
+        if (!strcmp(request_info->uri, url_list[i].url))
         {
             error = 0;
-            char *result = malloc(50);
-            char *arg = malloc(50);
             if (!request_info->query_string)
             {
+                type = NONE;
                 arg = (char *)request_info->query_string;
             }
-            else if (strchr((char *)request_info->query_string, '=') != NULL)
+            else if (mg_get_var(request_info->query_string, strlen(request_info->query_string), "num", arg, sizeof(arg)) >= 1)
             {
-                arg = strchr((char *)request_info->query_string, '=') + 1;
+                type = NUMBER;
+            }
+            else if (mg_get_var(request_info->query_string, strlen(request_info->query_string), "str", arg, sizeof(arg)) >= 1)
+            {
+                type = STRING;
             }
             else
             {
+                type = ERROR;
                 error = 1;
                 break;
             }
+
             result = (*function[url_list[i].index])(arg);
             content_length = snprintf(content, sizeof(content), "%s", result);
             mg_printf(conn,
@@ -39,9 +46,6 @@ static int begin_request_handler(struct mg_connection *conn)
                       "\r\n"
                       "%s",
                       content_length, content);
-
-            // free(result);
-            // free(arg);
         }
     }
 
@@ -56,6 +60,8 @@ static int begin_request_handler(struct mg_connection *conn)
                   "%s",
                   content_length, content);
     }
+    // Returning non-zero tells civetweb that our function has replied to
+    // the client, and civetweb should not send client any more data.
     return 1;
 }
 
