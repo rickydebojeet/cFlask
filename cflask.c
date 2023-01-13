@@ -1,5 +1,5 @@
 #include "civetweb.h"
-#include "functionslist.h"
+#include "functions.h"
 
 // This function will be called by civetweb on every new request.
 static int begin_request_handler(struct mg_connection *conn)
@@ -62,13 +62,13 @@ static int begin_request_handler(struct mg_connection *conn)
     return 1;
 }
 
-// void constructFunctionsList()
-// {
-//     for (int i = 0; i < FUNCTION_COUNT; i++)
-//     {
-//         function[url_list[i].index] = url_list[i].function;
-//     }
-// }
+void constructFunctionsList()
+{
+    for (int i = 0; i < FUNCTION_COUNT; i++)
+    {
+        function[url_list[i].index] = url_list[i].function_ptr;
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
         printf("Number of threads must be between 1 and 10000\n");
         exit(1);
     }
+
+    constructFunctionsList();
 
     struct mg_context *ctx;
     struct mg_callbacks callbacks;
