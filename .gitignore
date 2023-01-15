@@ -22,6 +22,7 @@
 *.la
 *.lo
 libhttp-1.8/
+load_tester/
 
 # Shared objects (inc. Windows DLLs)
 *.dll
@@ -43,6 +44,7 @@ cflask
 *.su
 *.idb
 *.pdb
+.vscode/
 
 # Kernel Module Compile Results
 *.mod*
