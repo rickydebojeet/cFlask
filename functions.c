@@ -103,7 +103,7 @@ void fibonacci(void *arg, char *result)
         int a = 0;
         int b = 1;
         int c;
-        for (i = 0; i < x; i++)
+        for (i = 2; i <= x; i++)
         {
             c = a + b;
             a = b;
